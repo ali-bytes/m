@@ -1,0 +1,63 @@
+ <asp:FormView runat="server" ID="userView" ItemType="SiteWithPrivs.User" RenderOuterTable="True"
+         DataKeyNames="ID" DefaultMode="ReadOnly" SelectMethod="GetUser"
+           InsertMethod="InsertUser" DeleteMethod="DeleteUser" UpdateMethod="UpdateUser"
+          OnItemInserted="userView_ItemInserted"
+          OnItemDeleted="userView_ItemDeleted" OnItemCommand="userView_ItemCommand" >
+        
+        <ItemTemplate>
+            <strong>Name</strong>
+            <br/>
+            <br/>
+            <%# Item.FullName %>
+            <br/>
+            <br/>
+              <strong>Email</strong>
+            <br/>
+            <br/>
+            <%# Item.UserEmail %>
+            <br/>
+            <br/>
+              <strong>Login Name</strong>
+            <br/>
+            <br/>
+            <%# Item.LoginName %>
+             
+            <asp:LinkButton ID="btnNew" runat="server" CommandName="New">new</asp:LinkButton>
+            <asp:LinkButton ID="btnEdit" runat="server" CommandName="Edit">Edit</asp:LinkButton>
+            <asp:LinkButton ID="btnDelete" runat="server" CommandName="Delete">Delete</asp:LinkButton>
+
+        </ItemTemplate>
+             <InsertItemTemplate>
+            <strong>Name</strong>
+            <br/>
+            <br/>
+           <asp:TextBox  ID="txtFullName" runat="server" Text='<%#: BindItem.FullName %>' Width="400"></asp:TextBox>
+            <br/>
+            <br/>
+              <strong>Email</strong>
+            <br/>
+            <br/>
+            <asp:TextBox ID="txtEmail" runat="server" Text='<%#: BindItem.UserEmail %>' Width="400"></asp:TextBox>
+            <br/>
+            <br/>
+            <asp:LinkButton ID="btnInsert" runat="server" CommandName="Insert" ValidationGroup="Insert">Insert</asp:LinkButton>
+            <asp:LinkButton ID="btnCancel" runat="server" CommandName="Cancel" CausesValidation="False">Cancel</asp:LinkButton>
+        </InsertItemTemplate>
+             <EditItemTemplate>
+           <strong>Name</strong>
+            <br/>
+            <br/>
+           <asp:TextBox ID="txtFN" runat="server" Text='<%#: BindItem.FullName %>' Width="400"></asp:TextBox>
+            <br/>
+            <br/>
+              <strong>Email</strong>
+            <br/>
+            <br/>
+            <asp:TextBox ID="txtem" runat="server" Text='<%#: BindItem.UserEmail %>' Width="400"></asp:TextBox>
+            <br/>
+            <br/>
+                 <asp:LinkButton ID="btnUpdate" runat="server" CommandName="Update" ValidationGroup="Edit">Update</asp:LinkButton>
+            <asp:LinkButton runat="server" ID="btnc" CommandName="Cancel" CausesValidation="False">Cancel</asp:LinkButton>
+       
+        </EditItemTemplate>
+    </asp:FormView>

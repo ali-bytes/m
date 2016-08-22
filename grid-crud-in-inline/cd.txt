@@ -1,0 +1,17 @@
+ public IQueryable<User> GetUsers()
+        {
+            
+                return db.Users;
+            
+        }
+
+        public void Update(int id)
+        {
+           var user= db.Users.Find(id);
+            TryUpdateModel(user);
+            if (ModelState.IsValid)
+            {
+                db.SaveChanges();
+            }
+
+        }

@@ -1,0 +1,15 @@
+ <asp:GridView runat="server" ItemType="SiteWithPrivs.User" DataKeyNames="ID" SelectMethod="GetUsers" AutoGenerateColumns="False">
+        
+        <Columns>
+            <asp:BoundField DataField="FullName" HeaderText="Name"/>
+            <asp:BoundField DataField="UserEmail" HeaderText="Email"/>
+            <asp:BoundField DataField="LoginName" HeaderText="Login Name"/>
+           
+            <asp:TemplateField>
+                <ItemTemplate>
+                    <%--<asp:HyperLink runat="server" NavigateUrl='<%# "UserDetail/"+Item.ID %>'>Detail</asp:HyperLink>--%>
+                    <a id="a1" runat="server" href='<%#: GetRouteUrl("UserDetail",new{ id=Item.ID }) %>'>Detail</a>
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+    </asp:GridView>

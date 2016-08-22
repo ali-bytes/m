@@ -1,0 +1,76 @@
+using System.Web.UI.WebControls;
+using Microsoft.AspNet.FriendlyUrls;
+using Microsoft.AspNet.FriendlyUrls.ModelBinding;
+
+namespace SiteWithPrivs
+{
+    public partial class UserDetail : System.Web.UI.Page
+    {
+        basicContext db = new basicContext();
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack && Request.QueryString["Command"] != null && Request.QueryString["Command"].Equals("New",StringComparison.OrdinalIgnoreCase))
+            {
+                userView.ChangeMode(FormViewMode.Insert);
+            }
+        }
+        public User GetUser([FriendlyUrlSegments(0)]int? id)
+        {
+            return db.Users.Find(id);
+        }
+        public int InsertUser()
+        {
+            var user = new User();
+            db.Users.Add(user);
+            TryUpdateModel(user);
+            if (ModelState.IsValid)
+            {
+               return db.SaveChanges();
+            }
+            return 0;
+        }
+        public int UpdateUser(int ID)
+        {
+           
+            var user = db.Users.Find(ID);
+            if (user == null)
+            {
+                return 0;
+            }
+
+            TryUpdateModel(user);
+            if (ModelState.IsValid)
+            {
+                return db.SaveChanges();
+            }
+            return 0;
+        }
+        public int DeleteUser(int ID)
+        {
+            db.Users.Remove(db.Users.Find(ID));
+            return db.SaveChanges();
+        }
+
+        protected void userView_ItemInserted(object sender, FormViewInsertedEventArgs e)
+        {
+            Response.Redirect("Default.aspx");
+        }
+        protected void userView_ItemDeleted(object sender, FormViewDeletedEventArgs e)
+        {
+            Response.Redirect("Default.aspx");
+        }
+        protected void userView_ItemCommand(object sender, FormViewCommandEventArgs e)
+        {
+            if (e.CommandName.Equals("Cancel"))
+            {
+                Response.Redirect("Default.aspx");
+                
+            }
+        } 
+        //public User GetUser([RouteData("id")] string id)
+        //{
+        //    return db.Users.Find(id);
+        //} 
+    }
+}

@@ -1,0 +1,12 @@
+ <asp:GridView runat="server" ItemType="SiteWithPrivs.User" DataKeyNames="ID" SelectMethod="GetUsers"
+       AutoGenerateColumns="False" AutoGenerateEditButton="True" UpdateMethod="Update">
+        
+        <Columns>
+            <asp:BoundField DataField="FullName" HeaderText="Name"/>
+            <asp:BoundField DataField="UserEmail" HeaderText="Email"/>
+            <asp:BoundField DataField="LoginName" HeaderText="Login Name" ReadOnly="True"/>
+           
+        </Columns>
+    </asp:GridView>
+
+    <asp:ValidationSummary runat="server" ShowModelStateErrors="True"/>
