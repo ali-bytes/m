@@ -1,0 +1,17 @@
+  var user = Authenticated();
+            if (user != null)
+            {
+                FormsAuthentication.RedirectFromLoginPage(user.LoginName,chk.Checked);
+
+
+                //var ticket = new FormsAuthenticationTicket(2,
+                //   user.LoginName,
+                //   DateTime.Now,
+                //   DateTime.Now.AddMinutes(720), chk.Checked, null, FormsAuthentication.FormsCookiePath);
+                //var hashCookies = FormsAuthentication.Encrypt(ticket);
+
+                //var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, hashCookies);
+                //Response.Cookies.Add(cookie);
+                //FormsAuthentication.SetAuthCookie(user.LoginName, true);
+
+            }

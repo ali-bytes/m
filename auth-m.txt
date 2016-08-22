@@ -1,0 +1,35 @@
+    protected void Page_Load(object sender, EventArgs e)
+        {
+
+            if (!Request.IsAuthenticated)
+            {
+                Response.Redirect("~/Login.aspx");
+                return;
+            }
+            var loginName = Request.RequestContext.HttpContext.User.Identity.Name;
+            if (loginName == string.Empty)
+            {
+                Response.Redirect("~/Login.aspx");
+                return;
+            }
+            using (basicContext db = new basicContext())
+            {
+                var user = db.Users.FirstOrDefault(u => u.LoginName == loginName);
+                if (user == null)
+                {
+                    Response.Redirect("~/Login.aspx");
+                    return;
+                }
+                Session["User_ID"] = user.ID;
+                Session["User_Name"] = user.LoginName;
+                GroupId = user.GroupID??0;
+            }
+        }
+
+ protected void btnSignOut_Click(object sender, EventArgs e)
+        {
+            FormsAuthentication.SignOut();
+            HttpContext.Current.Session.RemoveAll();
+            HttpContext.Current.Session.Abandon();
+          
+        }

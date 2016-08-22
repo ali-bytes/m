@@ -1,0 +1,21 @@
+Create FUNCTION fn_GetAllParent(@GroupId int) 
+RETURNS TABLE  
+As
+ RETURN   
+  
+SELECT 
+    [Project2].[ID] AS [ID], 
+    [Project2].[LinkedName] AS [LinkedName]
+    FROM ( SELECT 
+        [Extent1].[ID] AS [ID], 
+        [Extent1].[PrivOrder] AS [PrivOrder], 
+        [Extent1].[LinkedName] AS [LinkedName]
+        FROM [dbo].[privileges] AS [Extent1]
+        WHERE (1 = [Extent1].[ParentID]) AND ([Extent1].[ParentID] IS NOT NULL) AND ( EXISTS (SELECT 
+            1 AS [C1]
+            FROM  [dbo].[GroupPrivileges] AS [Extent2]
+            INNER JOIN [dbo].[privileges] AS [Extent3] ON [Extent2].[PrivilegeID] = [Extent3].[ID]
+            WHERE ((([Extent2].[GroupID] = @GroupId) AND ( NOT ([Extent2].[GroupID] IS NULL OR @GroupId IS NULL))) OR (([Extent2].[GroupID] IS NULL) AND (@GroupId IS NULL))) AND ([Extent3].[ParentID] = [Extent1].[ID]) AND ([Extent3].[ParentID] IS NOT NULL)
+        ))
+    )  AS [Project2]
+    --ORDER BY [Project2].[PrivOrder] ASC

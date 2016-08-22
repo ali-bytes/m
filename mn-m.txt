@@ -1,0 +1,64 @@
+   protected void Page_PreRender(object sender, EventArgs e)
+        {
+            if (Session["Menu"] != null)
+            {
+                mainMenu.InnerHtml = Session["Menu"].ToString();
+            }
+            else
+            {
+                LoadMenu();
+            }
+           
+        }
+
+        private void LoadMenu()
+        {
+            Menu.Append("<li class='header'>MAIN NAVIGATION</li>");
+            // get all parent
+            using (basicContext db= new basicContext())
+            {
+                //var all = db.fn_GetAllParent(1).ToList();
+                var allParent = db.privileges.Where(a => a.ParentID == 1 && (db.GroupPrivileges.Where(g => g.GroupID == GroupId).Select(g=>g.privilege.ParentID).ToList()).Contains(a.ID)
+                    ).OrderBy(a => a.PrivOrder).Select(s=>new
+                    {
+                        s.ID,
+                        s.LinkedName
+                    }).ToList();
+
+                //string q = allParent.ToString();
+              
+                //loop foreach parent and assign values to string builder
+                foreach (var child in allParent)
+                {
+                    var privilege = child;
+                    var pgs = db.GroupPrivileges.Where(a => a.GroupID == GroupId && a.privilege.ParentID == privilege.ID && a.privilege.ISLinked == true)
+                        .OrderBy(a => a.privilege.PrivOrder)
+                        .Select(a => new
+                        {
+                            a.privilege.Url,
+                            a.privilege.LinkedName,
+                            a.privilege.ParentPageName
+                        }).ToList();
+
+                    if (!pgs.Any()) continue;
+
+                    Menu.Append("<li class='treeview'><a href='#'><i class='fa'></i> <span>" + child.LinkedName + "</span>" +
+                                "<span class='pull-right-container'><i class='fa fa-angle-left pull-right'></i></span></a>" +
+                                "<ul class='treeview-menu'>");
+
+                    foreach (var p in pgs)
+                    {
+                        Menu.Append("<li><a href='"+p.Url+"'><i class='fa fa-circle-o'></i> "+p.LinkedName+"</a></li>");
+                    }
+                    Menu.Append("</ul></li>");
+
+                    mainMenu.InnerHtml = Menu.ToString();
+                    Session["Menu"] = Menu.ToString();
+                }
+
+            }
+
+
+            
+        }
+       
