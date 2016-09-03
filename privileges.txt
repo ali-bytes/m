@@ -1,0 +1,15 @@
+CREATE TABLE [dbo].[privileges] (
+    [ID]              INT            IDENTITY (1, 1) NOT NULL,
+    [Name]            NVARCHAR (255) NULL,
+    [ParentID]        INT            NULL,
+    [Url]             NVARCHAR (255) NULL,
+    [Notes]           NTEXT          NULL,
+    [PrivilegeTypeID] INT            NULL,
+    [PrivOrder]       INT            NULL,
+    [ISLinked]        BIT            NULL,
+    [ISParent]        BIT            NULL,
+    [LinkedName]      NVARCHAR (255) NULL,
+    [ParentPageName]  NVARCHAR (255) NULL,
+    CONSTRAINT [PK_privileges] PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT [FK_privileges_PrivilegeTypes] FOREIGN KEY ([PrivilegeTypeID]) REFERENCES [dbo].[PrivilegeTypes] ([ID])
+);
