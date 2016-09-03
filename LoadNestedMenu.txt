@@ -1,0 +1,70 @@
+ private void LoadNestedMenu()
+        {
+            Menu.Append("<li class='header'>MAIN NAVIGATION</li>");
+            // get all parent
+            using (basicContext db = new basicContext())
+            {
+                //var all = db.fn_GetAllParent(1).ToList();
+                var allParent = db.privileges.Where(a => a.ISParent != false && (db.GroupPrivileges.Where(g => g.GroupID == GroupId).Select(g => g.privilege.ParentID).ToList()).Contains(a.ID)
+                    ).OrderBy(a => a.PrivOrder).Select(s => new
+                    {
+                        s.ID,
+                        s.LinkedName,
+                        s.ParentID
+                    }).ToList();
+
+                //string q = allParent.ToString();
+                var mainParents = allParent.Where(a => a.ParentID == 1);
+                var nestedParent = allParent.Where(a => a.ParentID != 1);
+                //loop foreach parent and assign values to string builder
+                foreach (var child in mainParents)
+                {
+                    var privilege = child;
+                    var pgs = db.GroupPrivileges.Where(a => a.GroupID == GroupId && a.privilege.ParentID == privilege.ID && a.privilege.ISLinked == true)
+                        .OrderBy(a => a.privilege.PrivOrder)
+                        .Select(a => new
+                        {
+                            a.privilege.ID,
+                            a.privilege.Url,
+                            a.privilege.LinkedName,
+                            a.privilege.ParentPageName,
+                            a.privilege.ISParent
+                        }).ToList();
+
+                    if (!pgs.Any()) continue;
+
+                    Menu.Append("<li class='treeview'><a href='#'><i class='fa'></i> <span>" + child.LinkedName + "</span>" +
+                                "<span class='pull-right-container'><i class='fa fa-angle-left pull-right'></i></span></a>" +
+                                "<ul class='treeview-menu'>");
+
+                    foreach (var p in pgs)
+                    {
+                        if (p.ISParent == true)
+                        {
+                            Menu.Append("<li class='treeview'><a href='#'><i class='fa'></i> <span>" + p.LinkedName + "</span>" +
+                              "<span class='pull-right-container'><i class='fa fa-angle-left pull-right'></i></span></a>" +
+                              "<ul class='treeview-menu'>");
+
+                            var npgs = db.privileges.Where(a => a.ParentID == p.ID).ToList();
+                            foreach (var n in npgs)
+                            {
+                                Menu.Append("<li><a href='" + n.Url + "'><i class='fa fa-circle-o'></i> " + n.LinkedName + "</a></li>");                                                           
+                            }
+                            Menu.Append("</ul></li>");
+                        }
+                        else
+                        {
+                            Menu.Append("<li><a href='" + p.Url + "'><i class='fa fa-circle-o'></i> " + p.LinkedName + "</a></li>");                            
+                        }
+                    }
+                    Menu.Append("</ul></li>");
+
+                    mainMenu.InnerHtml = Menu.ToString();
+                    Session["Menu"] = Menu.ToString();
+                }
+
+            }
+
+
+
+        }
