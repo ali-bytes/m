@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.ModelBinding;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Microsoft.Owin;
+
+namespace SiteWithPrivs
+{
+    public partial class AddUser : System.Web.UI.Page
+    {
+        basicContext db = new basicContext();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                MultiView1.ActiveViewIndex = 0;
+            }
+            if (RouteData.Values["Command"] != null && RouteData.Values["Command"].ToString().Equals("New", StringComparison.OrdinalIgnoreCase))
+            {
+                
+            }
+            if (Request.QueryString["Command"] != null && Request.QueryString["Command"].ToString().Equals("New", StringComparison.OrdinalIgnoreCase))
+            {
+
+            }
+           
+        }
+
+        public AddUser()
+        {
+            
+        }
+        public AddUser([RouteData("Command")] string Command)
+        {
+
+        }
+
+        public IEnumerable<User> Select()
+        {
+            return db.Users;
+        }
+
+        public void Update(int ID)
+        {
+            User user = null;
+            user = db.Users.Find(ID);
+            TryUpdateModel(user);
+            //db.Users.Add(user);
+            db.SaveChanges();
+        }
+
+        public void Delete(int ID)
+        {
+            db.Users.Remove(db.Users.Find(ID));
+            db.SaveChanges();
+        }
+        public User GetUser()
+        {
+            return db.Users.Find(1);
+        }
+        public void Insert()
+        {
+            var user = new User();
+            user.LoginPassword = "123";
+            user.GroupID = 1;
+            db.Users.Add(user);
+            TryUpdateModel(user);
+            if (ModelState.IsValid)
+            {
+                 db.SaveChanges();
+                GridView1.DataBind();
+                MultiView1.ActiveViewIndex = 0;
+            }
+           
+        }
+
+        protected void OnClick(object sender, EventArgs e)
+        {
+            MultiView1.ActiveViewIndex = 1;
+            FormView1.ChangeMode(FormViewMode.Insert);
+        }
+        protected void userView_ItemCommand(object sender, FormViewCommandEventArgs e)
+        {
+            if (e.CommandName.Equals("Cancel"))
+            {
+                Response.Redirect("AddUser.aspx");
+
+            }
+        } 
+    }
+}
